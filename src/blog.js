@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 function Blog() {
-  const [posts, setPosts] = useState([]);
+  // const [posts, setPosts] = useState([]);
   const [blogData, setBlogData] = useState([]);
   useEffect(() => {
     let userObj = JSON.parse(sessionStorage.getItem("userDetails"));
     console.log(userObj._id);
 
-    axios.get(`http://127.0.0.1:4000/api/posts?userId=${userObj._id}`)
+    axios.get(`https://blogapp-api-lxve.onrender.com/api/posts?userId=${userObj._id}`)
       .then(response => {
-        setPosts(response.data); 
+        // setPosts(response.data); 
         setBlogData(response.data);
       })
       .catch(error => {
@@ -21,7 +21,7 @@ function Blog() {
   }, []);
   const handleLikeClick = (postId) => {
     console.log(postId);
-    axios.post(`http://127.0.0.1:4000/api/posts/${postId}/like`)
+    axios.post(`https://blogapp-api-lxve.onrender.com/api/posts/${postId}/like`)
       .then((response) => {
         
         console.log('Like updated successfully', response);

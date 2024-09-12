@@ -1,17 +1,20 @@
-import React, {  useState } from 'react';
+import React, {  useState,useEffect } from 'react';
 import './login.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import MainPages from './mainpage';
+// import MainPages from './mainpage';
 
 
-function Login({toggleSignup}) {
+
+function Login(props) {
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
 
   const navigate = useNavigate();
+  // const history = useHistory();
   
    const handleValidation=()=>{
     if(!username && !password){
@@ -53,7 +56,7 @@ function Login({toggleSignup}) {
     }
     const data = {username,password};
     
-    axios.post('http://127.0.0.1:4000/api/login',data)
+    axios.post('https://blogapp-api-lxve.onrender.com/api/login',data)
     
     .then(response => {
       console.log(response.data.s);
@@ -63,6 +66,7 @@ function Login({toggleSignup}) {
          
           sessionStorage.setItem('userDetails',  JSON.stringify(response.data));
           debugger;
+          props.onLogin();
           navigate("/mainpage");
           
         }
@@ -73,9 +77,25 @@ function Login({toggleSignup}) {
         console.log('Error fetching users:', error);
       });
    
-    
+
 
   };
+  
+  const handleGoogleLogin = ()=>{
+    window.location.href = 'https://blogapp-api-lxve.onrender.com/auth/google';
+    
+  }
+  useEffect(() => {
+
+    axios.get('https://blogapp-api-lxve.onrender.com/mainpage')
+      .then((response) => {
+        setUserProfile(response.data.userProfile);
+        navigate("/mainpage");
+      })
+      .catch((error) => {
+        console.error('Error fetching userProfile:', error);
+      });
+  }, []);
 
   return (
     <div className="login-container">
@@ -100,10 +120,12 @@ function Login({toggleSignup}) {
         </button>
         <p className='login-p'>
           Don't have an account?{' '}<span
-          className='login-span' onClick={toggleSignup} style={{cursor:'pointer'}}>sign up</span>
+          className='login-span' onClick={()=>{props.togglesignup()}} style={{cursor:'pointer'}}>sign up</span>
         </p>
       </form>
        <div className="login-error-message">{loginError}</div>
+       <button onClick={handleGoogleLogin}>Log in with Google</button>
+       
     </div>
   );
 }

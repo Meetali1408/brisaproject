@@ -7,14 +7,15 @@ function Admin(){
     const handleSubmit=(e)=>{
       
         e.preventDefault();
-        const userId = sessionStorage.getItem('userDetails'); 
+        const userId =JSON.parse(sessionStorage.getItem('userDetails')); 
         const data = {
             title,
             description,
-            author:userId.username
+            author:userId._id
           };
+          console.log(userId.username);
           
-        axios.post('http://127.0.0.1:4000/api/posts',data)
+        axios.post('https://blogapp-api-lxve.onrender.com/api/posts',data)
         .then(response=>{
             if(response.status===201){
 
